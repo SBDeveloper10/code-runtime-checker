@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Silkscreen:wght@400;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e6e6e6;
+    padding: 20px 30px;
+}
+
+header .app-title a {
+    text-decoration: none;
+    font-size: 24px;
+    font-family: 'Silkscreen';
+    color: #24292f;
+}
+
+header .app-link-btn a {
+    text-decoration: none;
+    font-family: 'Poppins';
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 20px;
+    color: #24292f;
+    border: 1px solid #24292f;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+header .app-link-btn a:hover {
+    background-color: #24292f;
+    color: white;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+    min-height: calc(100vh - 71px);
+}
+
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid #e6e6e6;
+}
+
+.editor-container .editor-options {
+    display: flex;
+    justify-content: right;
+    column-gap: 5px;
+    padding: 5px;
+    border-bottom: 1px solid #e6e6e6;
+}
+
+.editor-container .editor-options .custom-select {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+}
+
+.editor-container .editor-options select {
+    font-family: 'Poppins';
+    font-weight: 600;
+    padding: 10px 15px;
+    outline: none;
+    border: none;
+    background: white;
+    color: black;
+    border-right: 10px solid white;
+    cursor: pointer;
+}
+
+.editor-container .editor-options select option {
+    background: white;
+    color: black;
+}
+
+.editor-container .editor-options button {
+    font-family: 'Poppins';
+    font-weight: 600;
+    outline: none;
+    border: none;
+    color: black;
+    background-color: greenyellow;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.container #text-editor {
+    flex-grow: 1;
+    font-size: 20px;
+}
+
+.loader {
+    display: none;
+    width: 40px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+        radial-gradient(farthest-side, greenyellow 94%, #0000) top/6px 6px no-repeat,
+        conic-gradient(#0000 20%, greenyellow);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 6px), #000 0);
+    animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+    to{transform: rotate(1turn)}
+}
+
+.container .result-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .result-container .result {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.container .result-container .result .graph-wrapper {
+    height: fit-content;
+    box-sizing: border-box;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid greenyellow;
+}
+
+.result .graph-wrapper #execution-time-graph {
+    height: fit-content;
+}
+
+.container .result-container .result #snapshot {
+    font-family: 'Poppins';
+    font-weight: 600;
+    outline: none;
+    border: none;
+    color: black;
+    background-color: greenyellow;
+    padding: 15px 30px;
+    cursor: pointer;
+}
+
+.container .result-container .no-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: 'Poppins';
+}
+
+.container .result-container .no-result span {
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.container .result-container .no-result p {
+    font-size: 13px;
+}
+
+.container .result-container .no-result p span {
+    font-weight: 600;
+    font-size: 12px;
+    background: greenyellow;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+@media screen and (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        min-height: calc(100vh - 125px);
+    }
+
+    .editor-container {
+        border-right: none;
+        border-bottom: 1px solid #e6e6e6;
+    }
+    
+}
+
+@media screen and (max-width: 480px) {
+
+    header {
+        padding: 15px 20px;
+    }
+
+    header .app-title a {
+        /* margin-bottom: 20px; */
+        font-size: 20px;
+    }
+
+    header .app-link-btn a {
+        /* margin-top: 20px; */
+        padding: 8px 13px;
+        font-size: 12px;
+    }
+
+    .container #text-editor {
+        font-size: 16px;
+    }
+
+    .editor-container .editor-options select {
+        /* padding: 8px 10px; */
+        font-size: 12px;
+        margin-left: 10px;
+    }
+
+    .editor-container .editor-options button {
+        /* padding: 8px 15px; */
+        font-size: 12px;
+    }
+
+    .container .result-container .result .graph-wrapper {
+        margin: 10px;
+        padding: 10px;
+    }
+
+    .container .result-container .no-result span {
+        font-size: 18px;
+    }
+
+    .container .result-container .no-result p {
+        line-height: 12px;
+        font-size: 12px;
+    }
+
+    .container .result-container .no-result p span {
+        font-size: 10px;
+    }
+    
+}

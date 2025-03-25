@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Runtime</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='logo1.png')}}" type="image/png">
+    <!-- <link rel="stylesheet" href="../static/css/style.css"> -->
+</head>
+<body>
+    <header>
+        <div class="app-title">
+            <a href="/">Code RunTime</a>
+        </div>
+        <div class="app-link-btn">
+            <a href="https://github.com/shivbhakta10" target="_blank">❤️ Like on Github</a>
+        </div>
+    </header>
+    <div class="container">
+        <div class="editor-container">
+            <div class="editor-options">
+                <div class="custom-select">
+                    <select name="languages" id="languages">
+                        <option value="javascript">Javascript</option>
+                        <option value="c_cpp">C++</option>
+                        <option value="c">C</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+                <button id="run-code">Run Code</button>
+            </div>
+            <div id="text-editor"></div>
+        </div>
+        <div class="result-container">
+            <div class="loader"></div>
+            <div class="result">
+                <div class="graph-wrapper">
+                    <canvas id="execution-time-graph"></canvas>
+                </div>
+                <button id="snapshot">Snapshot</button>
+            </div>
+            <div class="no-result">
+                <span>Nothing Here Yet.</span>
+                <p>Tap on <span>Run Code</span> to view Graph</p>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="red">hello world</div> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.37.2/ace.js" integrity="sha512-pt7t2OgcAxE8NbdP8N02eYJgLS6qi1eB0PWVJGVt6saw627SW8ywVowev+RYB0Q6EDace5NtJzYiIsJZDJu0pg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Code Editor
+        var editor = ace.edit("text-editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/javascript");
+        // let red = document.querySelector(".red");
+        // red.addEventListener("click", async () => {
+        //     // let response = await fetch("/runCode");
+        //     let response = await fetch("/convertCode");
+        //     let data = await response.json();
+        //     console.log(data);
+        // });
+
+        let jsSampleCode = `let a = 0;\nfor (let i = 0; i < 100000; i++) {\n\ta++;\n}\nconsole.log(a);\n`;
+        let cppSampleCode = `#include <iostream>\nusing namespace std;\n\nint main() {\n\tint a = 0;\n\tfor (int i = 0; i < 100000; i++) {\n\t\ta++;\n\t}\n\tcout << a << endl;\n\treturn 0;\n}\n`;
+        let cSampleCode = `#include <stdio.h>\n\nint main() {\n\tint a = 0;\n\tfor (int i = 0; i < 100000; i++) {\n\t\ta++;\n\t}\n\tprintf("%d\\n", a);\n\treturn 0;\n}\n`;
+        let pythonSampleCode = `a = 0\nfor i in range(100000):\n\ta += 1\nprint(a)\n`;
+
+        editor.setValue(jsSampleCode, -1);
+
+
+        // Select Options
+        let languages = document.getElementById('languages');
+        languages.addEventListener('change', () => {
+            editor.session.setMode(`ace/mode/${languages.value}`);
+            switch (languages.value) {
+                case 'javascript':
+                    editor.setValue(jsSampleCode, -1);
+                    break;
+                case 'c_cpp':
+                    editor.setValue(cppSampleCode, -1);
+                    break;
+                case 'c':
+                    editor.setValue(cSampleCode, -1);
+                    break;
+                case 'python':
+                    editor.setValue(pythonSampleCode, -1);
+                    break;
+            }
+            // executionTimeChart.data.datasets[0].data = [1.00, 2.25, 3.25, 2.65];
+            // executionTimeChart.update();
+        });
+
+        // Run Code
+        let runCode = document.getElementById('run-code');
+        let loader = document.querySelector('.loader');
+        let result = document.querySelector('.result');
+        let no_result = document.querySelector('.no-result');
+
+        runCode.addEventListener('click', async () => {
+            result.style.display = 'none';
+            no_result.style.display = 'none';
+            loader.style.display = 'block';
+            let code = editor.getValue();
+            let from_lang = languages.value;
+            let to_lang = [];
+            let options = languages.options;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value !== languages.value) {
+                    to_lang.push(options[i].text);
+                }
+            }
+
+            let params = {
+                code: code,
+                from_lang: from_lang,
+                to_lang: to_lang
+            };
+            let queryString = new URLSearchParams(params).toString();
+            let response = await fetch(`/convertCode?${queryString}`);
+            let data = await response.json();
+
+            // let response = await fetch("/convertCode");
+            // let data = await response.json();
+            // console.log(data);
+            executionTimeChart.data.datasets[0].data = data.executionTimeList;
+            executionTimeChart.data.labels = data.languagesList;
+            executionTimeChart.update();
+            loader.style.display = 'none';
+            result.style.display = 'block';
+        });
+
+        // Graph
+
+        let ctx = document.getElementById('execution-time-graph');
+
+        const plugin = {
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart, args, options) => {
+                const {ctx} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = options.color || '#99ffff';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+            }
+        };
+
+        let executionTimeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['C', 'C++', 'Javascript', 'Python'],
+                datasets: [{
+                    label: 'Execution Time (in milliseconds)',
+                    data: [0.00, 1.25, 2.58, 1.82],
+                    // borderWidth: 0,
+                    minBarLength: 5,
+                    backgroundColor: 'greenyellow',
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                indexAxis: 'y',
+                plugins: {
+                    customCanvasBackgroundColor: {
+                        color: 'white',
+                    }
+                }
+            },
+            plugins: [plugin],
+        });
+
+
+        // Snapshot
+
+        let snapshot = document.getElementById('snapshot');
+        snapshot.addEventListener('click', () => {
+            let imageData = ctx.toDataURL();
+            let link = document.createElement('a');
+            link.href = imageData;
+            link.download = 'snapshot.png'
+            link.click();
+        });
+    </script>
+</body>
+</html>
