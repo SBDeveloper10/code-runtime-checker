@@ -15,7 +15,7 @@ headers = {
 	"Content-Type": "application/json"
 }
 
-genai.configure(api_key=os.getenv["API_KEY"])
+genai.configure(api_key=os.getenv("API_KEY"))
 
 
 @app.route("/")
