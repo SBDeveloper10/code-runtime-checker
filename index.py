@@ -10,7 +10,7 @@ app = Flask(__name__)
 url = "https://onecompiler-apis.p.rapidapi.com/api/v1/run"
 
 headers = {
-	"x-rapidapi-key": "419519b70fmsh7d0fad1f36695a9p14d646jsn3b0b206f3a3c",
+	"x-rapidapi-key": os.getenv("x_rapidapi_key"),
 	"x-rapidapi-host": "onecompiler-apis.p.rapidapi.com",
 	"Content-Type": "application/json"
 }
