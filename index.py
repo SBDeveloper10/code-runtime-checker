@@ -3,7 +3,6 @@ import requests
 import json
 import re
 import os
-from dotenv import load_dotenv
 import google.generativeai as genai
 
 
@@ -16,8 +15,7 @@ headers = {
 	"Content-Type": "application/json"
 }
 
-load_dotenv()
-genai.configure(api_key=os.environ["API_KEY"])
+genai.configure(api_key=os.getenv["API_KEY"])
 
 
 @app.route("/")
