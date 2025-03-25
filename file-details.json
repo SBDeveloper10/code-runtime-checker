@@ -1,0 +1,25 @@
+{
+    "languages":
+        {
+            "c": {
+                "filename": "sample-codes/Main.c",
+                "startwith": "  ",
+                "indexAt": 8
+            },
+            "cpp": {
+                "filename": "sample-codes/Main.cpp",
+                "startwith": "  ",
+                "indexAt": 11
+            },
+            "python": {
+                "filename": "sample-codes/index.py",
+                "startwith": "",
+                "indexAt": 6
+            },
+            "javascript": {
+                "filename": "sample-codes/index.js",
+                "startwith": "",
+                "indexAt": 4 
+            }
+        }
+}
